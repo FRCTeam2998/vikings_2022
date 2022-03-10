@@ -6,10 +6,10 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -34,8 +34,8 @@ public class Robot extends TimedRobot {
   private final CANSparkMax rightFront = new CANSparkMax(2, CANSparkMax.MotorType.kBrushless);
   private final CANSparkMax rightRear = new CANSparkMax(3, CANSparkMax.MotorType.kBrushless);
   //initialize all drive motor groups
-  private final SpeedControllerGroup left = new SpeedControllerGroup(leftFront, leftRear);
-  private final SpeedControllerGroup right = new SpeedControllerGroup(rightFront, rightRear);
+  private final MotorControllerGroup left = new MotorControllerGroup(leftFront, leftRear);
+  private final MotorControllerGroup right = new MotorControllerGroup(rightFront, rightRear);
   private final DifferentialDrive drivetrain = new DifferentialDrive(right, left);
   //initialize firing motors
   private final CANSparkMax intake = new CANSparkMax(6, CANSparkMax.MotorType.kBrushless);
@@ -86,10 +86,10 @@ public class Robot extends TimedRobot {
     //brute force code
 	  //drivetrain.tankDrive(xbox.getRawAxis(1)/3, xbox.getRawAxis(5)/3);
     //input controls, change velocity
-    if ((xbox.getRawAxis(2) > 0.2) && (velocity > -0.3)){
+    if ((xbox.getRawAxis(2) > 0.2) && (velocity > -0.75)){
       velocity -= 0.01;
     }
-    if ((xbox.getRawAxis(3) > 0.2) && (velocity < 0.3)){
+    if ((xbox.getRawAxis(3) > 0.2) && (velocity < 0.75)){
       velocity += 0.01;
     }
     //output control, arcade or tank
@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
         drivetrain.tankDrive(-1*velocity, velocity);
       }else{
         //partial turn
-        drivetrain.tankDrive(velocity*(Math.abs(xbox.getRawAxis(0))/2), velocity);
+        drivetrain.tankDrive(velocity*((1-Math.abs(xbox.getRawAxis(0)))/2), velocity);
       }
     }else if (xbox.getRawAxis(0) < -0.1){
       //turn left
@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
         drivetrain.tankDrive(velocity, -1*velocity);
       }else{
         //partial turn
-        drivetrain.tankDrive(velocity, velocity*(Math.abs(xbox.getRawAxis(0))/2));
+        drivetrain.tankDrive(velocity, velocity*((1-Math.abs(xbox.getRawAxis(0)))/2));
       }
     }else{
       //go straight
